@@ -1,0 +1,60 @@
+div class="subpage-content-wrapper #{ @repo.weight }"
+  header.subpage-content-header
+    = link_to @repo.github_url
+      h1.subpage-primary-title= @repo.name
+      p.subpage-secondary-title= @repo.github_url
+      h2.repo-language= @repo.language
+      p.repo-description= @repo.description
+
+  .repo-body
+    section.help-triage.content-section
+      h2.content-section-title= link_to @doc.path, @doc.to_github
+
+      - if @comment
+        p
+          pre= @comment.comment
+      - else
+        p No Docs, write some!
+
+      p
+        = link_to "Source ", @doc.to_github
+        | |
+        = link_to " Google " , "https://www.google.com/search?q=#{::URI::DEFAULT_PARSER.escape(@doc.path)}"
+        | |
+        = link_to " Stack overflow ", "http://stackoverflow.com/search?q=#{::URI::DEFAULT_PARSER.escape(@doc.path)}"
+
+    section.content-section.selectable
+      h2.content-section-title Edit
+      pre
+        p
+          | git clone git@github.com:#{ @repo.full_name }.git
+        p
+          | cd #{ @repo.name }
+        p
+          | open #{ @doc.file }
+    section.content-section.selectable
+      h2.content-section-title Contribute
+      pre
+        | # Make a new branch
+        p
+          | git checkout -b #{ @branch }
+        br
+
+        | # Commit to git
+        p
+          | git add #{ @doc.file }
+          | git commit -m "better docs for #{ @doc.path }"
+        br
+
+        | # Open pull request
+        p
+          | gem install hub # on a mac you can `brew install hub`
+        p
+          | hub fork
+        p
+          | git push #{ @username } #{ @branch }
+        p
+          | hub pull-request
+        br
+
+        | # Celebrate!

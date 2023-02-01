@@ -1,0 +1,47 @@
+.clearfix
+  = f.label :email, t("activerecord.attributes.user.email", default: "Email"), class: "label label-info"
+  .controls
+    .input-prepend
+      span.add-on
+        i.icon-envelope
+      = f.text_field :email, class: 'text_field'
+  = f.label :email_frequency, t("activerecord.attributes.user.email_frequency", default: "Email Frequency"), class: "label label-info"
+  .controls
+    .input-preprend
+      span.add-on
+        i.icon-envelope
+      = f.select :email_frequency, options_for_select( EmailRateLimit::USER_STATES_HASH.map {|key, name| [ name, key ] }, f.object.email_frequency), class: 'select'
+      p When you're busy we try to send you fewer emails, if that's not good enough set your desired frequency here. For example if you set "twice a week" you won't receive more than 2 emails a week.
+      p How often should you get emails? It depends on your goals:
+      ul.bullets
+        li <strong>Daily:</strong><i> "I want to ramp up as fast as possible, I'm working towards becoming a committer ASAP."</i>
+        li <strong>Twice a week:</strong></i> "Being a committer is still in my sights, but it doesn't need to be tomorrow."</i>
+        li <strong>Once a week:</strong><i> "I might be a committer one day, but for now I only want to help out here and there."</i>
+        li <strong>Once a month:</strong> <i>"I want to see casually what's going on and I want to help a tiny bit."</i>
+      br
+      p The most important thing is consistency. No matter the frequency you can commit to, keep clicking on issues, keep learning, and you'll get there!
+
+  = f.label :email_time_of_day, t("activerecord.attributes.user.email_time_of_day", default: "Email time of day"), class: "label label-info"
+  .controls
+    .input-preprend
+      span.add-on
+        i.icon-envelope
+      = f.select :email_time_of_day,
+          options_for_select(available_times_of_day.map { |time| [time.to_formatted_s(:time_only_with_zone), time.to_formatted_s(:iso8601)] }, f.object.email_time_of_day&.to_formatted_s(:iso8601)),
+          class: 'select'
+
+  = f.label :daily_issue_limit, t("activerecord.attributes.user.daily_issue_limit", default: "Max # of issues you want to receive per day"), class: "label label-info"
+  .input
+    = f.number_field :daily_issue_limit, class: 'number_field', min: 0
+    p If you're getting too many issues, limit the maximum number you want to get in your inbox at one time. To disable submit an empty value.
+
+  = f.check_box :skip_issues_with_pr, class: 'checkbox'
+  => f.label :skip_issues_with_pr, t("activerecord.attributes.user.skip_issues_with_pr", default: "Skip Pull requests"), class: "label label-info"
+  p By default, we send you a combination of issues and pull request. Check this box to only get Issues.
+
+  = f.check_box :htos_contributor_unsubscribe, class: 'checkbox'
+  => f.label :htos_contributor_unsubscribe, t("activerecord.attributes.user.htos_promo", default: "Mute 'How to Open Source' book content emails"), class: "label label-info"
+  p By default, you will receive promotional emails (e.g. discount codes and free content) for the "How to Open Source: Learn the secrets of successful contributors" book. Check this box to mute those emails.
+
+.form-actions
+  => button_tag "Save", class: "button full-width-action"
